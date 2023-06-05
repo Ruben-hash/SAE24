@@ -11,14 +11,23 @@ if len(sys.argv) >= 3:
 	print("Erreur d'utilisation du script")
 	exit()
 
+nb_sec = sys.argv[1]
+ip_client = sys.argv[2]
 
+Methode = []
+Chemin = []
+Version = []
+Date = []
 content = []
 
 def check(p):
 	if HTTPRequest in p and p[IP].src == ip_client:
 		req = p[HTTPRequest]
 		
-		content.append(req.Method.decode("utf-8"), req.Path.decode("utf-8"),req.Http_Version.decode("utf-8"),str(datetime.now()))
+		content.append(req.Method.decode("utf-8")) 
+		content.append(req.Path.decode("utf-8"))
+		content.append(req.Http_Version.decode("utf-8"))
+		content.append(str(datetime.now()))
 		if req.Method.decode("utf-8") == "POST":
 			content.append(str(req.payload.load.decode("utf-8")))
 	datae = {
@@ -38,11 +47,8 @@ def check(p):
 	})	
 	with open("Résultat.json", "w", encoding="utf-8") as filecontent:
             # Ajout des informations du dictionnaire data dans le fichier json
-            json.dump(datae, filecontent, indent=4)
-        return datae
-	
-
-
-			
+            json.dump(data, filecontent, indent=4)
 
 sniff(prn=check, timeout=int(nb_sec))
+
+
