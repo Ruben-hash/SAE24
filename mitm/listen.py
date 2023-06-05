@@ -11,13 +11,7 @@ if len(sys.argv) >= 3:
 	print("Erreur d'utilisation du script")
 	exit()
 
-nb_sec = sys.argv[1]
-ip_client = sys.argv[2]
 
-Methode = []
-Chemin = []
-Version = []
-Date = []
 content = []
 
 def check(p):
