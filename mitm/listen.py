@@ -16,22 +16,35 @@ ip_client = sys.argv[2]
 
 content = []
 
+# Charger les données existantes depuis le fichier JSON
+try:
+    with open("capture.json", "r", encoding="utf-8") as filecontent:
+        existing_data = json.load(filecontent)
+    if isinstance(existing_data, list):
+        content = existing_data
+except FileNotFoundError:
+    pass
+
 def check(p):
     if HTTPRequest in p and p[IP].src == ip_client:
         req = p[HTTPRequest]
-        
-        content.append({
+
+        request_data = {
             "methode": req.Method.decode("utf-8"),
             "chemin": req.Path.decode("utf-8"),
             "version": req.Http_Version.decode("utf-8"),
+			"IP client": p[IP].src,
+			"IP serveur": p[IP].dst,
             "date": str(datetime.now())
-        })
+        }
 
         if req.Method.decode("utf-8") == "POST":
-            content[-1]["contenu"] = req.payload.load.decode("utf-8")
+            request_data["contenu"] = req.payload.load.decode("utf-8")
 
-    with open("Résultat.json", "w", encoding="utf-8") as filecontent:
-        # Écriture du contenu dans le fichier JSON
+        if request_data not in content:
+            content.append(request_data)
+
+    with open("capture.json", "w", encoding="utf-8") as filecontent:
         json.dump(content, filecontent, indent=4)
 
 sniff(prn=check, timeout=nb_sec)
